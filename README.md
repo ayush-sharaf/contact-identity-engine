@@ -1,22 +1,28 @@
-# 📇 Identify Service (Bitespeed Challenge)
+# Contact Identity Resolution Engine
 
-This is a Node.js + TypeScript API that identifies and consolidates customer contact information (email and phone number) across multiple entries, similar to Bitespeed's `/identify` service.
+This project is a backend API for resolving duplicate customer identities across email and phone records. It accepts partial contact inputs, links related records, promotes a canonical primary contact when needed, and returns a consolidated identity view that downstream systems can use safely.
 
-## 🚀 Features
+## Problem It Solves
 
-- Identifies contacts using `email` and/or `phoneNumber`
-- Links duplicate or related contacts via `linkedId`
-- Handles merging of multiple primary contacts
-- Returns consolidated data including all emails, phone numbers, and secondary contact IDs
-- Built with **Express**, **TypeScript**, and **NeonDB (PostgreSQL)**
+Customer data often arrives from multiple forms, devices, or workflows with overlapping phone numbers and email addresses. This service merges those records into a single logical identity while preserving the relationship between primary and secondary contacts.
 
----
+## Capabilities
 
-## 🧾 API Specification
+- Accepts either `email`, `phoneNumber`, or both
+- Finds related contacts through shared identifiers
+- Merges overlapping records into a single identity graph
+- Maintains primary and secondary contact precedence
+- Returns a normalized view of:
+  - canonical contact id
+  - all known emails
+  - all known phone numbers
+  - secondary contact ids
 
-### POST `/identify`
+## API
 
-#### Request Body
+### `POST /identify`
+
+Request:
 
 ```json
 {
@@ -25,7 +31,7 @@ This is a Node.js + TypeScript API that identifies and consolidates customer con
 }
 ```
 
-#### Response
+Response:
 
 ```json
 {
@@ -38,161 +44,80 @@ This is a Node.js + TypeScript API that identifies and consolidates customer con
 }
 ```
 
----
+## Tech Stack
 
-## 🏗️ Project Structure
+- Node.js
+- TypeScript
+- Express
+- PostgreSQL / Neon
+- dotenv
 
-```
-identify-service/
-├── src/
-│   ├── controllers/       # Route controllers
-│   ├── routes/            # API route definitions
-│   ├── services/          # Business logic and DB operations
-│   ├── database/          # DB connection config
-│   ├── models/            # TypeScript interfaces for Contact
-│   ├── app.ts             # Express app setup
-│   └── server.ts          # Server entry point
-├── .env                   # Environment variables
-├── tsconfig.json
-├── package.json
-└── README.md
-```
+## Project Structure
 
----
-
-## 🛠️ Setup Instructions
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/your-username/identify-service.git
-cd identify-service
+```text
+src/
+├── controllers
+├── routes
+├── services
+├── database
+├── models
+├── app.ts
+└── server.ts
 ```
 
-### 2. Install dependencies
+## Local Development
+
+Install dependencies:
 
 ```bash
 npm install
 ```
 
-### 3. Setup `.env`
+Create a `.env` file:
 
-Create a `.env` file in the root:
-
-```
+```env
 DATABASE_URL=your_neon_postgres_url
 PORT=3000
 ```
 
-### 4. Run the server
+Run in development:
 
 ```bash
 npm run dev
 ```
 
-Server runs at: `http://localhost:3000/identify`
-
----
-
-## 🗄️ Database Schema (PostgreSQL)
-
-```sql
-CREATE TABLE "Contact" (
-  "id" SERIAL PRIMARY KEY,
-  "phoneNumber" VARCHAR,
-  "email" VARCHAR,
-  "linkedId" INTEGER REFERENCES "Contact"("id"),
-  "linkPrecedence" VARCHAR CHECK ("linkPrecedence" IN ('primary', 'secondary')),
-  "createdAt" TIMESTAMP NOT NULL DEFAULT NOW(),
-  "updatedAt" TIMESTAMP NOT NULL DEFAULT NOW(),
-  "deletedAt" TIMESTAMP
-);
-```
-
----
-
-## 🧪 Testing
-
-You can use Postman or curl:
+Build and run production:
 
 ```bash
-curl -X POST http://localhost:3000/identify \
-  -H "Content-Type: application/json" \
-  -d '{"email":"foo@example.com", "phoneNumber":"1234567890"}'
+npm run build
+npm start
 ```
 
----
+## Data Model
 
-## 👨‍💻 Tech Stack
+The service stores contacts with:
 
-- Node.js
-- TypeScript
-- Express
-- NeonDB (PostgreSQL)
-- dotenv
+- `email`
+- `phoneNumber`
+- `linkedId`
+- `linkPrecedence`
+- timestamps
 
----
+This model allows the service to keep a canonical primary record while linking duplicate or later-discovered records as secondaries.
 
-## Deployed API Endpoint
+## Live Endpoint
 
-The API is live at:
+The API is deployed at:
 
-**POST** `https://bitespeed-backend-task-g3l6.onrender.com/identify`
+`https://bitespeed-backend-task-g3l6.onrender.com/identify`
 
-### Example Usage (with Postman or curl)
+## Why This Project Matters
 
-#### Request
+This is not just a CRUD API. The interesting part is the identity-resolution logic:
 
-- **Method:** POST
-- **URL:** https://bitespeed-backend-task-g3l6.onrender.com/identify
-- **Headers:**
-  - Content-Type: application/json
-- **Body (JSON):**
-  ```json
-  {
-    "email": "user@example.com",
-    "phoneNumber": "123456"
-  }
-  ```
-  (You can provide either or both fields.)
+- discovering overlap across partially matching inputs
+- merging previously separate identity chains
+- maintaining a stable canonical record
+- returning a deterministic consolidated response
 
-#### Response
-
-- **Success:**
-  ```json
-  {
-    "contact": {
-      "primaryContatctId": 1,
-      "emails": ["user@example.com"],
-      "phoneNumbers": ["123456"],
-      "secondaryContactIds": []
-    }
-  }
-  ```
-- **Error (missing fields):**
-  ```json
-  {
-    "error": "Either email or phoneNumber must be provided"
-  }
-  ```
-
-## Local Development
-
-1. Clone the repo and install dependencies:
-   ```sh
-   git clone <repo-url>
-   cd bitespeed-task
-   npm install
-   ```
-2. Set up your `.env` file with the required environment variables (see `.env.example` if present).
-3. Build and run:
-   ```sh
-   npm run build
-   npm start
-   ```
-
-## Deployment
-
-This project is deployed on [Render](https://render.com/). See the code and scripts for deployment details.
-
----
+That makes it a solid backend systems project focused on data consistency and business rules, not just transport and routing.
