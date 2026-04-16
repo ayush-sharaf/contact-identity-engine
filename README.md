@@ -2,6 +2,10 @@
 
 This project is a backend API for resolving duplicate customer identities across email and phone records. It accepts partial contact inputs, links related records, promotes a canonical primary contact when needed, and returns a consolidated identity view that downstream systems can use safely.
 
+## Architecture
+
+![Contact Identity Engine Architecture](./contact-identity-engine-architecture.svg)
+
 ## Problem It Solves
 
 Customer data often arrives from multiple forms, devices, or workflows with overlapping phone numbers and email addresses. This service merges those records into a single logical identity while preserving the relationship between primary and secondary contacts.
