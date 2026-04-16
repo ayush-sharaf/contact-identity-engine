@@ -1,7 +1,7 @@
 {
-  "name": "bitespeed-task",
+  "name": "contact-identity-engine",
   "version": "1.0.0",
-  "description": "This is a Node.js + TypeScript API that identifies and consolidates customer contact information (email and phone number) across multiple entries, similar to Bitespeed's `/identify` service.",
+  "description": "This is a Node.js + TypeScript API that identifies and consolidates customer contact information (email and phone number) across multiple entries.",
   "main": "index.js",
   "scripts": {
     "dev": "ts-node-dev src/server.ts",
@@ -11,16 +11,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ayush-sharaf/bitespeed-backend-task.git"
+    "url": "git+https://github.com/ayush-sharaf/contact-identity-engine.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "bugs": {
-    "url": "https://github.com/ayush-sharaf/bitespeed-backend-task/issues"
+    "url": "https://github.com/ayush-sharaf/contact-identity-engine/issues"
   },
-  "homepage": "https://github.com/ayush-sharaf/bitespeed-backend-task#readme",
+  "homepage": "https://github.com/ayush-sharaf/contact-identity-engine#readme",
   "dependencies": {
     "@neondatabase/serverless": "^1.0.1",
     "dotenv": "^16.5.0",

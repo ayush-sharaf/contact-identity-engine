@@ -105,12 +105,6 @@ The service stores contacts with:
 
 This model allows the service to keep a canonical primary record while linking duplicate or later-discovered records as secondaries.
 
-## Live Endpoint
-
-The API is deployed at:
-
-`https://bitespeed-backend-task-g3l6.onrender.com/identify`
-
 ## Why This Project Matters
 
 This is not just a CRUD API. The interesting part is the identity-resolution logic:
